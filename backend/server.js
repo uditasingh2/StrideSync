@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const strideRoutes = require("./routes/strideRoutes");
 const dbRoutes = require("./routes/dbRoutes");
 const sampleRoutes = require("./routes/sampleRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,6 +43,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/strides", strideRoutes);
 app.use("/api/db-status", dbRoutes);
 app.use("/api", sampleRoutes);
+app.use("/api/auth", authRoutes);
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (_req, res) => {

@@ -2,8 +2,19 @@ import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Zap } from "lucide-react";
+import { clearAuthSession, getAuthUser, isAuthenticated } from "@/lib/auth";
+import { useMemo, useState } from "react";
 
 export function Navbar() {
+  const [authVersion, setAuthVersion] = useState(0);
+  const authenticated = useMemo(() => isAuthenticated(), [authVersion]);
+  const user = useMemo(() => getAuthUser(), [authVersion]);
+
+  const handleSignOut = () => {
+    clearAuthSession();
+    setAuthVersion((v) => v + 1);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="container flex h-16 items-center justify-between">
@@ -21,9 +32,28 @@ export function Navbar() {
         </nav>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild size="sm">
-            <Link to="/dashboard">Get Started</Link>
-          </Button>
+          {authenticated ? (
+            <>
+              <span className="hidden md:inline text-xs text-muted-foreground max-w-[140px] truncate">
+                {user?.email}
+              </span>
+              <Button asChild size="sm" variant="outline">
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+              <Button size="sm" variant="ghost" onClick={handleSignOut}>
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild size="sm" variant="outline">
+                <Link to="/signin">Sign In</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
